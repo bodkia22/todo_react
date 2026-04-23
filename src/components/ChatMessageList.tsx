@@ -13,7 +13,7 @@ const ChatMessageList = ({ messages, isPending, isError }: ChatMessageListProps)
             <div className="max-w-3xl mx-auto flex flex-col gap-3">
                 {messages.length === 0 && (
                     <p className="text-center text-gray-500 mt-10">
-                        Задай питання асистенту — наприклад, "які в мене задачі на цей тиждень?"
+                        Ask the assistant a question — e.g., "what tasks do I have this week?"
                     </p>
                 )}
 
@@ -43,7 +43,7 @@ const ChatMessageList = ({ messages, isPending, isError }: ChatMessageListProps)
 
                 {isError && (
                     <div className="bg-red-900/50 text-red-200 text-center py-2 rounded-lg text-sm">
-                        Помилка. Спробуй ще раз.
+                        Something went wrong. Please try again.
                     </div>
                 )}
             </div>

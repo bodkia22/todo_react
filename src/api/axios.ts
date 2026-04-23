@@ -5,10 +5,9 @@ const api = axios.create({
 })
 
 api.interceptors.response.use(
-    (response) => response,  // якщо ок — пропускаємо
+    (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            // logout
             localStorage.removeItem('token')
             window.location.href = '/login'
         }

@@ -10,7 +10,7 @@ interface ColumnProps {
 
 const Column = ({ title, tasks, dayIndex }: ColumnProps) => {
     const { setNodeRef } = useDroppable({
-        id: dayIndex  // унікальний id колонки
+        id: dayIndex
     })
 
     return (

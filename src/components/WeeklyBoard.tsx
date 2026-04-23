@@ -26,14 +26,13 @@ const WeeklyBoard = () => {
         )
 
         await updateTask(taskId, { due_date: newDate })
-        // invalidateQueries ВИДАЛИ
     }
 
     const tasksByDay = tasks.reduce((acc, task) => {
         if (!task.due_date) {
-            acc[-1].push(task) // Todo — без дати
+            acc[-1].push(task)
         } else {
-            const day = new Date(task.due_date).getDay() // 0=Нд, 1=Пн...
+            const day = new Date(task.due_date).getDay()
             acc[day].push(task)
         }
         return acc
@@ -60,7 +59,7 @@ const WeeklyBoard = () => {
 export default WeeklyBoard;
 
 const getNextDateForDay = (dayIndex: number): string | null => {
-    if (dayIndex === -1) return null  // Todo — без дати
+    if (dayIndex === -1) return null
 
     const today = new Date()
     const currentDay = today.getDay()

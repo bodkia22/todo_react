@@ -23,7 +23,7 @@ const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Напиши щось..."
+                    placeholder="Type a message..."
                     disabled={disabled}
                     className="flex-1 bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
                 />
