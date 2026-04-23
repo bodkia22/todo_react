@@ -2,7 +2,7 @@ import type { Task } from '../types/task';
 import TaskCard from './TaskCard';
 
 interface Props {
-    tasks: Task[];  // компонент приймає масив задач
+    tasks: Task[];
 }
 
 const TaskList = ({ tasks }: Props) => {
