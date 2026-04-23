@@ -30,9 +30,9 @@ const WeeklyBoard = () => {
 
     const tasksByDay = tasks.reduce((acc, task) => {
         if (!task.due_date) {
-            acc[-1].push(task) // no due date
+            acc[-1].push(task)
         } else {
-            const day = new Date(task.due_date).getDay() // 0=Sun, 1=Mon...
+            const day = new Date(task.due_date).getDay()
             acc[day].push(task)
         }
         return acc
@@ -59,7 +59,7 @@ const WeeklyBoard = () => {
 export default WeeklyBoard;
 
 const getNextDateForDay = (dayIndex: number): string | null => {
-    if (dayIndex === -1) return null  // no due date
+    if (dayIndex === -1) return null
 
     const today = new Date()
     const currentDay = today.getDay()
