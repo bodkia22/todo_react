@@ -4,6 +4,7 @@ import TasksPage from './pages/TasksPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicRoute from './components/PublicRoute'
 import RegistrationPage from './pages/RegistrationPage'
+import AssistantPage from './pages/AssistantPage'
 
 function App() {
   return (
@@ -29,6 +30,12 @@ function App() {
           <PublicRoute>
             <RegistrationPage />
           </PublicRoute>
+        } />
+
+        <Route path="/assistant" element={
+          <ProtectedRoute>
+            <AssistantPage />
+          </ProtectedRoute>
         } />
 
       </Routes>
