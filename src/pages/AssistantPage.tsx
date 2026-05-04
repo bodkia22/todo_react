@@ -59,7 +59,7 @@ const AssistantPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col">
+    <div className="h-screen bg-gray-900 text-white flex flex-col">
       <NavBar />
       <div className="flex flex-1 overflow-hidden">
         <ConversationSidebar activeConversationId={conversationId} />

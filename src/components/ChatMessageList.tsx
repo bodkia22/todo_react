@@ -1,6 +1,7 @@
 import type { Message } from "../types/message";
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { useRef, useEffect } from "react";
 
 interface ChatMessageListProps {
   messages: Message[]
@@ -9,6 +10,12 @@ interface ChatMessageListProps {
 }
 
 const ChatMessageList = ({ messages, isPending, isError }: ChatMessageListProps) => {
+
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, isPending])
 
   return (
     <div className="flex-1 overflow-y-auto px-8 py-6">
@@ -26,7 +33,7 @@ const ChatMessageList = ({ messages, isPending, isError }: ChatMessageListProps)
           >
             <div
               className={`max-w-[70%] px-4 py-2 rounded-2xl ${msg.role === 'user'
-                ? 'bg-red-600 text-white rounded-br-sm'
+                ? 'bg-blue-800 text-white rounded-br-sm'
                 : 'bg-gray-800 text-gray-100 rounded-bl-sm'
                 }`}
             >
@@ -52,6 +59,7 @@ const ChatMessageList = ({ messages, isPending, isError }: ChatMessageListProps)
             Something went wrong. Please try again.
           </div>
         )}
+        <div ref={bottomRef} />
       </div>
     </div>)
 }

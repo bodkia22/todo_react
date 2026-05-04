@@ -4,13 +4,15 @@ import WeeklyBoard from "../components/WeeklyBoard";
 
 
 const TasksPage = () => {
-    return (
-        <div className="min-h-screen bg-gray-900 text-white p-8">
-            <NavBar />
-            <CreateTaskForm />
-            <WeeklyBoard />
-        </div>
-    );
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      <NavBar />
+      <div className="p-8">
+        <CreateTaskForm />
+        <WeeklyBoard />
+      </div>
+    </div>
+  );
 };
 
 export default TasksPage;
