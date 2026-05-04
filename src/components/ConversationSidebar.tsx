@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query"
-import { getConversations } from "../api/conversations"
-import { Link } from "react-router-dom"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { deleteConversation, getConversations } from "../api/conversations"
+import { Link, useNavigate } from "react-router-dom"
 
 interface ConversationSidebarProps {
   activeConversationId?: number
@@ -13,18 +13,42 @@ const ConversationSidebar = ({ activeConversationId }: ConversationSidebarProps)
     queryFn: getConversations
   })
 
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteConversation,
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+
+      if (variables === activeConversationId) {
+        navigate('/assistant');
+      }
+    }
+  });
+
+  const handleDelete = (id: number) => {
+
+    deleteMutation.mutate(id);
+  }
+
   return (
     <aside className="w-64 bg-gray-800 p-4 flex flex-col gap-1">
       {conversations.map(c => (
         <Link
-          key={c.id}                     // ← key тепер на Link
+          key={c.id}
           to={`/assistant/${c.id}`}
-          className={`block px-3 py-2 rounded ${activeConversationId === c.id
-            ? 'bg-blue-500'
+          className={`flex items-center justify-between px-3 py-2 rounded ${activeConversationId === c.id
+            ? 'bg-blue-800'
             : 'hover:bg-gray-700'
             }`}
         >
-          {c.title ?? 'Untitled'}
+          <span>{c.title ?? 'Untitled'}</span>
+          <button className="text-gray-500 hover:text-red-400 transition-colors text-lg leading-none" onClick={() => {
+            handleDelete(c.id);
+          }} onPointerDown={(e) => e.stopPropagation()}>
+            ✕
+          </button>
         </Link>
       ))}
     </aside>
