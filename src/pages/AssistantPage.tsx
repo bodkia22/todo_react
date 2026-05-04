@@ -1,18 +1,48 @@
 import { useState } from "react";
 import type { Message } from '../types/message';
-import { useMutation } from "@tanstack/react-query";
-import { sendMessageToAssistant } from "../api/assistant";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import NavBar from "../components/Navbar";
 import ChatMessageList from "../components/ChatMessageList";
 import ChatInput from "../components/ChatInput";
+import { useNavigate, useParams } from "react-router-dom";
+import { sendChatMessage } from "../api/chat";
+import { getConversation } from "../api/conversations";
+import ConversationSidebar from "../components/ConversationSidebar";
 
 const AssistantPage = () => {
+
+  const { conversationId: conversationIdParam } = useParams()
+  const navigate = useNavigate()
+  const conversationId: number | undefined = conversationIdParam ? Number(conversationIdParam) : undefined
+
+  const { data: conversation } = useQuery({
+    queryKey: ['conversation', conversationId],
+    queryFn: () => getConversation(conversationId!),
+    enabled: conversationId !== undefined,
+  })
+
+  const serverMessages: Message[] = (conversation?.messages ?? []).map(m => ({
+    id: String(m.id),
+    role: m.role,
+    content: m.content,
+  }))
+
+
   const [messages, setMessages] = useState<Message[]>([])
+  const queryClient = useQueryClient()
+
+  const allMessages = [...serverMessages, ...messages]
 
   const mutation = useMutation({
-    mutationFn: sendMessageToAssistant,
+    mutationFn: sendChatMessage,
     onSuccess: (reply) => {
-      setMessages(prev => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: reply }])
+
+      if (!conversationId) {
+        navigate(`/assistant/${reply.conversation_id}`)
+      }
+      queryClient.invalidateQueries({ queryKey: ['conversation', reply.conversation_id] })
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+      setMessages([])
     },
   })
 
@@ -23,25 +53,28 @@ const AssistantPage = () => {
       content: text,
     }
 
-    const updatedMessages = [...messages, userMsg]   // ← новий масив руками
+    setMessages(prev => [...prev, userMsg])
 
-    setMessages(updatedMessages)
-
-    mutation.mutate(updatedMessages)
+    mutation.mutate({ content: text, conversation_id: conversationId })
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col p-8">
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       <NavBar />
-      <ChatMessageList
-        messages={messages}
-        isPending={mutation.isPending}
-        isError={mutation.isError}
-      />
-      <ChatInput
-        onSend={handleSend}
-        disabled={mutation.isPending}
-      />
+      <div className="flex flex-1 overflow-hidden">
+        <ConversationSidebar activeConversationId={conversationId} />
+        <div className="flex flex-col flex-1">
+          <ChatMessageList
+            messages={allMessages}
+            isPending={mutation.isPending}
+            isError={mutation.isError}
+          />
+          <ChatInput
+            onSend={handleSend}
+            disabled={mutation.isPending}
+          />
+        </div>
+      </div>
     </div>
   )
 }
