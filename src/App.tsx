@@ -38,6 +38,12 @@ function App() {
           </ProtectedRoute>
         } />
 
+        <Route path="/assistant/:conversationId" element={
+          <ProtectedRoute>
+            <AssistantPage />
+          </ProtectedRoute>
+        } />
+
       </Routes>
     </BrowserRouter>
   )
