@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../api/auth";
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import api from "../api/axios";
 
 const NavBar = () => {
   const navigate = useNavigate()
@@ -8,10 +9,15 @@ const NavBar = () => {
     queryKey: ['me'],
     queryFn: getCurrentUser
   })
+  const queryClient = useQueryClient()
 
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
+  const handleLogout = async () => {
+    try {
+      await api.post('auth/logout')
+    } catch (error) {
+      console.error('Logout request failed', error)
+    }
+    queryClient.clear()
     navigate('/login')
   }
 
