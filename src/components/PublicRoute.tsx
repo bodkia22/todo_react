@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "../api/auth";
+import LoadingScreen from "./LoadingScreen";
 
 
 interface Props {
@@ -16,7 +17,7 @@ const PublicRoute = ({ children }: Props) => {
   })
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingScreen />;
   }
   if (user) {
     return <Navigate to="/tasks" />;
