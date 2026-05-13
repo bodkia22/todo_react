@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { login } from '../api/auth';
 import { useNavigate, Link } from 'react-router-dom'
-import axios from "axios";
+import { parseApiError } from '../utils/errors';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -10,15 +10,14 @@ const LoginPage = () => {
 
   const navigate = useNavigate()
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     try {
       await login(email, password);
       navigate('/tasks')
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.detail || 'Login failed')
-      }
+    } catch (err) {
+      setError(parseApiError(err))
     }
   };
   return (
@@ -26,10 +25,11 @@ const LoginPage = () => {
       <div className="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold text-white mb-6 text-center">Welcome back</h1>
 
-        <div className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleLogin}>
           <input
             type="email"
             value={email}
+            required
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             className="bg-gray-700 text-white rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
@@ -37,13 +37,14 @@ const LoginPage = () => {
           <input
             type="password"
             value={password}
+            required
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             className="bg-gray-700 text-white rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
           />
           {error && <p className="text-red-400 text-sm">{error}</p>}
           <button
-            onClick={handleLogin}
+            type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors"
           >
             Login
@@ -55,7 +56,7 @@ const LoginPage = () => {
               Register
             </Link>
           </p>
-        </div>
+        </form>
       </div>
     </div>
   );
